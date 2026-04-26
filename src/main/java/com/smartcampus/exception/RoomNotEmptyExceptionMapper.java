@@ -1,0 +1,27 @@
+/*
+ * @author bhpranita
+ */
+package com.smartcampus.exception;
+
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
+import java.util.HashMap;
+import java.util.Map;
+
+@Provider
+public class RoomNotEmptyExceptionMapper implements ExceptionMapper<RoomNotEmptyException> {
+
+    @Override
+    public Response toResponse(RoomNotEmptyException exception) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "409 Conflict");
+        error.put("message", exception.getMessage());
+        error.put("hint", "Please remove or reassign all sensors before deleting this room.");
+        return Response.status(409)
+                .type(MediaType.APPLICATION_JSON)
+                .entity(error)
+                .build();
+    }
+}
