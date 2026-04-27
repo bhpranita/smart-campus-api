@@ -98,11 +98,11 @@ The HTTP 422 unprocessable entity is far more precise since it informs the clien
 
 ### Part 5.4 — Cybersecurity Risks of Exposing Stack Traces
 
-Revealing stack traces of Java to external API clients is an extremely poor choice security-wise, since a stack trace reveals quite a bit of information about the inner workings of your code.
+Showing stack traces from Java to any clients of your API is extremely bad from a security perspective, because there’s actually a lot you can learn from a stack trace about what your code does internally.
 
-For instance, a stack trace provides you with the precise names of classes, functions, and lines of code in your program. This makes it easier for an attacker to determine how your program is structured and exploit any weaknesses in its architecture. It also allows attackers to know what libraries and frameworks you use and their corresponding version numbers, making it easy to find vulnerabilities associated with those versions.
+As an example, a stack trace gives you the exact name of classes, functions, and even lines in your source code. This means that an attacker can easily figure out the structure of your software and take advantage of its weak points. Furthermore, the attacker can get an idea of which third-party libraries or frameworks you are using and even their version numbers.
 
-Stack traces may also sometimes contain the values of variables from the time of exception, which might lead to unintentional leakage of sensitive information about users or the application itself. That is why we catch all exceptions using our GenericExceptionMapper and send back a 500 response without any additional information.
+In addition, stack traces can sometimes hold the value of variables at the point of occurrence of an exception, which can inadvertently result in leakage of sensitive data related to users or the application. That is the reason why we always catch all the exceptions through our GenericExceptionMapper and respond with a 500 status code.
 
 ### Part 5.5 — Why Use Filters for Logging
 
