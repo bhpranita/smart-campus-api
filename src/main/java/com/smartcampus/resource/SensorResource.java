@@ -4,6 +4,7 @@
 package com.smartcampus.resource;
 
 import com.smartcampus.exception.LinkedResourceNotFoundException;
+import com.smartcampus.model.Room;
 import com.smartcampus.model.Sensor;
 import com.smartcampus.store.DataStore;
 import jakarta.ws.rs.*;
@@ -52,6 +53,23 @@ public class SensorResource {
             return Response.status(404).entity("{\"error\":\"Sensor not found\"}").build();
         }
         return Response.ok(sensor).build();
+    }
+
+    @DELETE
+    @Path("/{sensorId}")
+    public Response deleteSensor(@PathParam("sensorId") String sensorId) {
+        Sensor sensor = DataStore.sensors.get(sensorId);
+        if (sensor == null) {
+            return Response.status(404).entity("{\"error\":\"Sensor not found\"}").build();
+        }
+        if (sensor.getRoomId() != null) {
+            Room room = DataStore.rooms.get(sensor.getRoomId());
+            if (room != null) {
+                room.getSensorIds().remove(sensor.getId());
+            }
+        }
+        DataStore.sensors.remove(sensorId);
+        return Response.ok("{\"message\":\"Sensor deleted successfully\"}").build();
     }
 
     @Path("/{sensorId}/readings")
