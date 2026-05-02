@@ -2,7 +2,7 @@
 
 ## Overview
 
-This RESTful API was created for use in the Smart Campus Project of our university through the use of JAX-RS (Jersey). The facility management team will control the rooms and sensors around the campus via RESTful API. The system’s data is kept by HashMap and ArrayList running under the Grizzly HTTP server.
+This RESTful API was created for use in the Smart Campus Project of our university through the use of JAX-RS (Jersey). The facility management team will control the rooms and sensors around the campus via RESTful API. The system's data is kept by HashMap and ArrayList running under the Grizzly HTTP server.
 
 ## What I Have Done
 
@@ -38,6 +38,12 @@ curl -X POST http://localhost:8080/api/v1/sensors -H "Content-Type: application/
 
 curl -X GET "http://localhost:8080/api/v1/sensors?type=CO2"
 
+curl -X DELETE http://localhost:8080/api/v1/sensors/CO2-001
+
+curl -X GET http://localhost:8080/api/v1/sensors/TEMP-001/readings
+
+curl -X POST http://localhost:8080/api/v1/sensors/TEMP-001/readings -H "Content-Type: application/json" -d '{"value":412.5}'
+
 ## Conceptual Report
 
 ### Part 1.1 — JAX-RS Resource Lifecycle
@@ -52,7 +58,7 @@ The thread-safety aspect could also be considered here. Several requests may be 
 
 HATEOAS stands for "Hypermedia as the Engine of Application State." This means that when there is a response from the API, it is supposed to come with links that show the next steps that one can follow. This means that after getting details on a specific room through the API response, one should also be able to delete the room and access its sensors.
 
-This is seen as advanced REST architecture for the reason that this API becomes self-documenting. The client no longer needs any external documentation to know which resources exist and how to utilize them as everything that the client needs is contained within the API’s response. In addition to this, if at any time the server decides to change its URL structure, it would not affect the client because the client uses the links within the response rather than absolute URLs.
+This is seen as advanced REST architecture for the reason that this API becomes self-documenting. The client no longer needs any external documentation to know which resources exist and how to utilize them as everything that the client needs is contained within the API's response. In addition to this, if at any time the server decides to change its URL structure, it would not affect the client because the client uses the links within the response rather than absolute URLs.
 
 ### Part 2.1 — Returning IDs vs Full Room Objects
 
@@ -80,7 +86,7 @@ First of all, the parameters are optional anyway. So, if you do not specify type
 
 Secondly, query parameters are the usual method for applying filters within REST APIs. Everybody who has ever worked with an API knows that query parameters imply filters. Placing the filter within the URL path causes type/CO2 to appear as a separate resource, which is misleading since it is merely a filter criterion.
 
-Third, when you want to include additional filters like “status” or “roomId” later on, using query parameters simply involves concatenating those parameters in the format "?type=CO2&status=ACTIVE". Path based filters make it very hard to do that.
+Third, when you want to include additional filters like "status" or "roomId" later on, using query parameters simply involves concatenating those parameters in the format "?type=CO2&status=ACTIVE". Path based filters make it very hard to do that.
 
 ### Part 4.1 — Sub-Resource Locator Pattern
 
@@ -98,7 +104,7 @@ The HTTP 422 unprocessable entity is far more precise since it informs the clien
 
 ### Part 5.4 — Cybersecurity Risks of Exposing Stack Traces
 
-Showing stack traces from Java to any clients of your API is extremely bad from a security perspective, because there’s actually a lot you can learn from a stack trace about what your code does internally.
+Showing stack traces from Java to any clients of your API is extremely bad from a security perspective, because there's actually a lot you can learn from a stack trace about what your code does internally.
 
 As an example, a stack trace gives you the exact name of classes, functions, and even lines in your source code. This means that an attacker can easily figure out the structure of your software and take advantage of its weak points. Furthermore, the attacker can get an idea of which third-party libraries or frameworks you are using and even their version numbers.
 
